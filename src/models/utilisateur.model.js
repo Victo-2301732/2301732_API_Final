@@ -26,7 +26,12 @@ export async function trouverUsagerParIdentifiants(courriel, motDePasse) {
 
 export async function trouverUsagerParCle(cleAPI) {
   const resultat = await pool.query('SELECT * FROM usagers WHERE cle_api = $1', [cleAPI]);
-  return resultat.rows[0];
+  return resultat.rows[0] || null;
+}
+
+export async function ValidationCle(cleApi) {
+  const resultat = await pool.query('SELECT * FROM usagers WHERE cle_api = $1', [cleApi]);
+  return resultat.rows[0] || null;
 }
 
 export async function regenererCleAPI(idUsager) {

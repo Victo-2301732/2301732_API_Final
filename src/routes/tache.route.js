@@ -1,22 +1,23 @@
 import express from 'express';
 import {
-  listerTaches,
-  detailsTache,
-  ajouterTache,
+  listerTaches, 
+  detailsTache, 
+  ajouterTache, 
   modifierTache,
-  changerStatutTache,
+  changerStatutTache, 
   supprimerTache,
-  ajouterSousTache,
-  modifierSousTache,
-  changerStatutSousTache,
+  ajouterSousTache, 
+  modifierSousTache, 
+  changerStatutSousTache, 
   supprimerSousTache
 } from '../controllers/tache.controller.js';
 
-import { validerCleAPI } from '../middlewares/cleapi.middleware.js';
+import authentification from '../middlewares/authentification.middleware.js';
 
 const routeur = express.Router();
-routeur.use(validerCleAPI);
+routeur.use(authentification);
 
+// Routes protégées
 routeur.get('/', listerTaches);
 routeur.get('/:id', detailsTache);
 routeur.post('/', ajouterTache);
