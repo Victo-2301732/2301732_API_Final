@@ -1,72 +1,92 @@
 import pool from '../config/db_pg.js';
 
-export async function obtenirTaches(idUsager, inclureTerminees = false) {
-  const requete = inclureTerminees
-    ? 'SELECT * FROM taches WHERE id_usager = $1'
-    : 'SELECT * FROM taches WHERE id_usager = $1 AND statut = $2';
+export async function obtenirTaches(utilisateur_id, inclureCompletes = false) {
+  const requete = inclureCompletes
+    ? 'SELECT * FROM taches WHERE utilisateur_id = $1'
+    : 'SELECT * FROM taches WHERE utilisateur_id = $1 AND complete = 0';
 
-  const valeurs = inclureTerminees ? [idUsager] : [idUsager, 'en cours'];
-  const resultat = await pool.query(requete, valeurs);
+  const resultat = await pool.query(requete, [utilisateur_id]);
   return resultat.rows;
 }
 
-export async function obtenirTacheParId(idTache, idUsager) {
-  const tacheRes = await pool.query('SELECT * FROM taches WHERE id = $1 AND id_usager = $2', [idTache, idUsager]);
+export async function obtenirTacheParId(tache_id, utilisateur_id) {
+  const tacheRes = await pool.query(
+    'SELECT * FROM taches WHERE id = $1 AND utilisateur_id = $2',
+    [tache_id, utilisateur_id]
+  );
   const tache = tacheRes.rows[0];
   if (!tache) return null;
 
-  const sousTachesRes = await pool.query('SELECT * FROM sous_taches WHERE id_tache = $1', [idTache]);
+  const sousTachesRes = await pool.query(
+    'SELECT * FROM sous_taches WHERE tache_id = $1',
+    [tache_id]
+  );
   tache.sous_taches = sousTachesRes.rows;
-
   return tache;
 }
 
-export async function creerTache(idUsager, tache) {
-  const { titre, description, date_debut, date_echeance, statut } = tache;
+export async function creerTache(utilisateur_id, donnees) {
+  const { titre, description, date_debut, date_echeance, complete } = donnees;
   const resultat = await pool.query(
-    `INSERT INTO taches (id_usager, titre, description, date_debut, date_echeance, statut)
+    `INSERT INTO taches (utilisateur_id, titre, description, date_debut, date_echeance, complete)
      VALUES ($1, $2, $3, $4, $5, $6) RETURNING id`,
-    [idUsager, titre, description, date_debut, date_echeance, statut || 'en cours']
+    [utilisateur_id, titre, description, date_debut, date_echeance, complete || 0]
   );
   return resultat.rows[0].id;
 }
 
-export async function modifierTache(idTache, idUsager, donnees) {
+export async function modifierTache(tache_id, utilisateur_id, donnees) {
   const { titre, description, date_debut, date_echeance } = donnees;
   await pool.query(
     `UPDATE taches
      SET titre = $1, description = $2, date_debut = $3, date_echeance = $4
-     WHERE id = $5 AND id_usager = $6`,
-    [titre, description, date_debut, date_echeance, idTache, idUsager]
+     WHERE id = $5 AND utilisateur_id = $6`,
+    [titre, description, date_debut, date_echeance, tache_id, utilisateur_id]
   );
 }
 
-export async function modifierStatutTache(idTache, idUsager, statut) {
-  await pool.query('UPDATE taches SET statut = $1 WHERE id = $2 AND id_usager = $3', [statut, idTache, idUsager]);
+export async function modifierCompleteTache(tache_id, utilisateur_id, complete) {
+  await pool.query(
+    'UPDATE taches SET complete = $1 WHERE id = $2 AND utilisateur_id = $3',
+    [complete, tache_id, utilisateur_id]
+  );
 }
 
-export async function supprimerTache(idTache, idUsager) {
-  await pool.query('DELETE FROM sous_taches WHERE id_tache = $1', [idTache]);
-  await pool.query('DELETE FROM taches WHERE id = $1 AND id_usager = $2', [idTache, idUsager]);
+export async function supprimerTache(tache_id, utilisateur_id) {
+  await pool.query('DELETE FROM sous_taches WHERE tache_id = $1', [tache_id]);
+  await pool.query('DELETE FROM taches WHERE id = $1 AND utilisateur_id = $2', [tache_id, utilisateur_id]);
 }
 
-export async function ajouterSousTache(idTache, titre) {
+export async function ajouterSousTache(tache_id, titre) {
   const resultat = await pool.query(
-    `INSERT INTO sous_taches (id_tache, titre, statut)
-     VALUES ($1, $2, 'en cours') RETURNING id`,
-    [idTache, titre]
+    `INSERT INTO sous_taches (tache_id, titre, complete)
+     VALUES ($1, $2, 0) RETURNING id`,
+    [tache_id, titre]
   );
   return resultat.rows[0].id;
 }
 
-export async function modifierSousTache(idTache, idSousTache, titre) {
-  await pool.query('UPDATE sous_taches SET titre = $1 WHERE id = $2 AND id_tache = $3', [titre, idSousTache, idTache]);
+export async function modifierSousTache(tache_id, sous_tache_id, titre) {
+  await pool.query(
+    `UPDATE sous_taches
+     SET titre = $1
+     WHERE id = $2 AND tache_id = $3`,
+    [titre, sous_tache_id, tache_id]
+  );
 }
 
-export async function modifierStatutSousTache(idTache, idSousTache, statut) {
-  await pool.query('UPDATE sous_taches SET statut = $1 WHERE id = $2 AND id_tache = $3', [statut, idSousTache, idTache]);
+export async function modifierCompleteSousTache(tache_id, sous_tache_id, complete) {
+  await pool.query(
+    `UPDATE sous_taches
+     SET complete = $1
+     WHERE id = $2 AND tache_id = $3`,
+    [complete, sous_tache_id, tache_id]
+  );
 }
 
-export async function supprimerSousTache(idTache, idSousTache) {
-  await pool.query('DELETE FROM sous_taches WHERE id = $1 AND id_tache = $2', [idSousTache, idTache]);
+export async function supprimerSousTache(tache_id, sous_tache_id) {
+  await pool.query(
+    'DELETE FROM sous_taches WHERE id = $1 AND tache_id = $2',
+    [sous_tache_id, tache_id]
+  );
 }
