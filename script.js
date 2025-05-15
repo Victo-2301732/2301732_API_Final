@@ -11,8 +11,7 @@ dotenv.config();
 const app = express();
 app.use(express.json());
 
-const stream = fs.createWriteStream(path.join('logs', 'erreurs.log'), { flags: 'a' });
-app.use(morgan('combined', { stream }));
+app.use(morgan('dev'));
 
 app.use('/api/taches', routeTaches);
 app.use('/api/utilisateurs', routeUtilisateurs);
