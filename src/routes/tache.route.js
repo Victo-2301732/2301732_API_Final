@@ -4,11 +4,11 @@ import {
   detailsTache, 
   ajouterTache, 
   modifierTache,
-  changerStatutTache, 
+  changerCompleteTache,     
   supprimerTache,
   ajouterSousTache, 
   modifierSousTache, 
-  changerStatutSousTache, 
+  changerCompleteSousTache, 
   supprimerSousTache
 } from '../controllers/tache.controller.js';
 
@@ -22,12 +22,12 @@ routeur.get('/', listerTaches);
 routeur.get('/:id', detailsTache);
 routeur.post('/', ajouterTache);
 routeur.put('/:id', modifierTache);
-routeur.patch('/:id/statut', changerStatutTache);
+routeur.patch('/:id/complete', changerCompleteTache);                    
 routeur.delete('/:id', supprimerTache);
 
 routeur.post('/:id/sous-taches', ajouterSousTache);
 routeur.put('/:id/sous-taches/:idSousTache', modifierSousTache);
-routeur.patch('/:id/sous-taches/:idSousTache/statut', changerStatutSousTache);
+routeur.patch('/:id/sous-taches/:idSousTache/complete', changerCompleteSousTache); 
 routeur.delete('/:id/sous-taches/:idSousTache', supprimerSousTache);
 
 export default routeur;
