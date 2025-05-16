@@ -23,6 +23,10 @@ app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument, swaggerOp
 app.use('/api/taches', routeTaches);
 app.use('/api/utilisateurs', routeUtilisateurs);
 
+app.get('/api', (req, res) => {
+  res.send('<h1>Bienvenue sur l\'API de tâches</h1>');
+});
+
 app.use((req, res) => res.status(404).json({ erreur: 'Route non trouvée' }));
 
 const PORT = process.env.PORT || 3000;

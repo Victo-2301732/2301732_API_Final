@@ -100,7 +100,7 @@
                 "properties": {
                   "courriel": {
                     "type": "string",
-                    "example": "alice@example.com"
+                    "example": "john@example.com"
                   },
                   "motDePasse": {
                     "type": "string",
@@ -367,6 +367,193 @@
           },
           "404": {
             "description": "Tâche non trouvée"
+          }
+        }
+      }
+    },
+    "/api/taches/{id}/sous-taches": {
+      "post": {
+        "summary": "Ajouter une sous-tâche à une tâche",
+        "tags": [
+          "Sous-tâches"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "description": "ID de la tâche",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "titre"
+                ],
+                "properties": {
+                  "titre": {
+                    "type": "string",
+                    "example": "Lire Swagger"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Sous-tâche créée"
+          },
+          "400": {
+            "description": "Paramètres invalides"
+          },
+          "404": {
+            "description": "Tâche non trouvée"
+          }
+        }
+      }
+    },
+    "/api/taches/{id}/sous-taches/{idSousTache}": {
+      "put": {
+        "summary": "Modifier une sous-tâche",
+        "tags": [
+          "Sous-tâches"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "in": "path",
+            "name": "idSousTache",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "titre"
+                ],
+                "properties": {
+                  "titre": {
+                    "type": "string",
+                    "example": "Corriger OpenAPI"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": "Sous-tâche modifiée"
+          },
+          "404": {
+            "description": "Sous-tâche non trouvée"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Supprimer une sous-tâche",
+        "tags": [
+          "Sous-tâches"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "in": "path",
+            "name": "idSousTache",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Sous-tâche supprimée"
+          },
+          "404": {
+            "description": "Sous-tâche non trouvée"
+          }
+        }
+      }
+    },
+    "/api/taches/{id}/sous-taches/{idSousTache}/complete": {
+      "patch": {
+        "summary": "Changer le statut d’une sous-tâche",
+        "tags": [
+          "Sous-tâches"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "in": "path",
+            "name": "idSousTache",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "complete"
+                ],
+                "properties": {
+                  "complete": {
+                    "type": "integer",
+                    "example": 1
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": "Statut modifié"
+          },
+          "404": {
+            "description": "Sous-tâche non trouvée"
           }
         }
       }
