@@ -6,7 +6,6 @@ const authentification = (req, res, next) => {
     return res.status(401).json({ message: "Vous devez fournir une clé api" });
   }
 
-  // Récupérer clé API format "cle_api XXXXXXXX"
   const cleApi = req.headers.authorization.split(' ')[1];
 
   // Vérifier clé API valide

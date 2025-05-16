@@ -1,0 +1,375 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "API de gestion de tâches",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:3000",
+      "description": "Serveur de développement"
+    },
+    {
+      "url": "https://two301732-api-final.onrender.com",
+      "description": "Serveur en ligne Render"
+    }
+  ],
+  "paths": {
+    "/api/utilisateurs/inscription": {
+      "post": {
+        "summary": "Inscription d’un utilisateur",
+        "tags": [
+          "Utilisateurs"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "nom",
+                  "prenom",
+                  "courriel",
+                  "motDePasse"
+                ],
+                "properties": {
+                  "nom": {
+                    "type": "string",
+                    "example": "Tremblay"
+                  },
+                  "prenom": {
+                    "type": "string",
+                    "example": "Alice"
+                  },
+                  "courriel": {
+                    "type": "string",
+                    "example": "alice@example.com"
+                  },
+                  "motDePasse": {
+                    "type": "string",
+                    "example": "abc123"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Utilisateur créé avec succès",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "cle_api": {
+                      "type": "string",
+                      "example": "abcdef1234567890"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Données manquantes ou invalides"
+          },
+          "500": {
+            "description": "Erreur interne serveur"
+          }
+        }
+      }
+    },
+    "/api/utilisateurs/cle": {
+      "post": {
+        "summary": "Récupérer ou régénérer une clé API",
+        "tags": [
+          "Utilisateurs"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "courriel",
+                  "motDePasse"
+                ],
+                "properties": {
+                  "courriel": {
+                    "type": "string",
+                    "example": "alice@example.com"
+                  },
+                  "motDePasse": {
+                    "type": "string",
+                    "example": "abc123"
+                  },
+                  "regenerer": {
+                    "type": "boolean",
+                    "example": true
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Clé API retournée ou régénérée",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "cle_api": {
+                      "type": "string",
+                      "example": "abcdef1234567890"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Identifiants invalides"
+          },
+          "500": {
+            "description": "Erreur interne serveur"
+          }
+        }
+      }
+    },
+    "/api/taches": {
+      "get": {
+        "summary": "Lister les tâches de l'utilisateur",
+        "tags": [
+          "Tâches"
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "toutes",
+            "description": "Inclure les tâches complétées",
+            "schema": {
+              "type": "boolean"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Liste des tâches retournée avec succès"
+          },
+          "401": {
+            "description": "Clé API manquante ou invalide"
+          }
+        }
+      },
+      "post": {
+        "summary": "Créer une tâche",
+        "tags": [
+          "Tâches"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "titre",
+                  "description",
+                  "date_debut"
+                ],
+                "properties": {
+                  "titre": {
+                    "type": "string",
+                    "example": "Faire la doc"
+                  },
+                  "description": {
+                    "type": "string",
+                    "example": "Écrire la documentation"
+                  },
+                  "date_debut": {
+                    "type": "string",
+                    "format": "date",
+                    "example": "2025-05-15"
+                  },
+                  "date_echeance": {
+                    "type": "string",
+                    "format": "date",
+                    "example": "2025-05-20"
+                  },
+                  "complete": {
+                    "type": "integer",
+                    "example": 0
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Tâche créée"
+          },
+          "400": {
+            "description": "Paramètres invalides"
+          },
+          "401": {
+            "description": "Clé API manquante ou invalide"
+          }
+        }
+      }
+    },
+    "/api/taches/{id}": {
+      "get": {
+        "summary": "Voir une tâche par ID",
+        "tags": [
+          "Tâches"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Tâche trouvée"
+          },
+          "404": {
+            "description": "Tâche non trouvée"
+          }
+        }
+      },
+      "put": {
+        "summary": "Modifier une tâche",
+        "tags": [
+          "Tâches"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "titre",
+                  "description",
+                  "date_debut"
+                ],
+                "properties": {
+                  "titre": {
+                    "type": "string"
+                  },
+                  "description": {
+                    "type": "string"
+                  },
+                  "date_debut": {
+                    "type": "string",
+                    "format": "date"
+                  },
+                  "date_echeance": {
+                    "type": "string",
+                    "format": "date"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": "Tâche modifiée"
+          },
+          "404": {
+            "description": "Tâche non trouvée"
+          }
+        }
+      },
+      "patch": {
+        "summary": "Changer le statut complet de la tâche",
+        "tags": [
+          "Tâches"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "complete"
+                ],
+                "properties": {
+                  "complete": {
+                    "type": "integer",
+                    "example": 1
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": "Statut mis à jour"
+          },
+          "404": {
+            "description": "Tâche non trouvée"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Supprimer une tâche",
+        "tags": [
+          "Tâches"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Tâche supprimée"
+          },
+          "404": {
+            "description": "Tâche non trouvée"
+          }
+        }
+      }
+    }
+  }
+}

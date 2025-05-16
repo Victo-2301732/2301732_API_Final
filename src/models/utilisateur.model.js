@@ -4,6 +4,7 @@ import bcrypt from 'bcrypt';
 
 export async function creerUtilisateur({ nom, prenom, courriel, motDePasse }) {
   const motDePasseHache = await bcrypt.hash(motDePasse, 10);
+  // Solution de ChatGPT prompt: comment générer une clé d'api dans un projet express
   const cleAPI = crypto.randomBytes(16).toString('hex');
 
   await pool.query(
