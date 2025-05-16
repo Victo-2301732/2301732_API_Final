@@ -36,15 +36,15 @@
                 "properties": {
                   "nom": {
                     "type": "string",
-                    "example": "Tremblay"
+                    "example": "Doe"
                   },
                   "prenom": {
                     "type": "string",
-                    "example": "Alice"
+                    "example": "John"
                   },
                   "courriel": {
                     "type": "string",
-                    "example": "alice@example.com"
+                    "example": "john@example.com"
                   },
                   "motDePasse": {
                     "type": "string",
