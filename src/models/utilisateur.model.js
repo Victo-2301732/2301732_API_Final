@@ -7,7 +7,7 @@ export async function creerUsager({ nom, prenom, courriel, motDePasse }) {
   const cleAPI = crypto.randomBytes(16).toString('hex');
 
   await pool.query(
-    `INSERT INTO usagers (nom, prenom, courriel, motdepasse, cle_api)
+    `INSERT INTO usagers (nom, prenom, courriel, password, cle_api)
      VALUES ($1, $2, $3, $4, $5)`,
     [nom, prenom, courriel, motDePasseHache, cleAPI]
   );

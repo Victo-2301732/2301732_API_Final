@@ -17,7 +17,6 @@ import authentification from '../middlewares/authentification.middleware.js';
 const routeur = express.Router();
 routeur.use(authentification);
 
-// Routes protégées
 routeur.get('/', listerTaches);
 routeur.get('/:id', detailsTache);
 routeur.post('/', ajouterTache);
