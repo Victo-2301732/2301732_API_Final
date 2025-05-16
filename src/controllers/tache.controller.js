@@ -1,5 +1,6 @@
 import * as modele from '../models/tache.model.js';
 
+// Liste les tâches
 export async function listerTaches(req, res) {
   try {
     const inclureCompletes = req.query.toutes === 'true';
@@ -11,6 +12,7 @@ export async function listerTaches(req, res) {
   }
 }
 
+// Détail tâche par ID
 export async function detailsTache(req, res) {
   try {
     const tache = await modele.obtenirTacheParId(req.params.id, req.usager.id);
@@ -22,6 +24,7 @@ export async function detailsTache(req, res) {
   }
 }
 
+// Ajoute tâche pour user connecté
 export async function ajouterTache(req, res) {
   try {
     const id = await modele.creerTache(req.usager.id, req.body);
@@ -32,6 +35,7 @@ export async function ajouterTache(req, res) {
   }
 }
 
+// Modifie tâche par id
 export async function modifierTache(req, res) {
   try {
     await modele.modifierTache(req.params.id, req.usager.id, req.body);
@@ -42,6 +46,7 @@ export async function modifierTache(req, res) {
   }
 }
 
+// Change statut (1 = completé, 0 = non-completé)
 export async function changerCompleteTache(req, res) {
   try {
     await modele.modifierCompleteTache(req.params.id, req.usager.id, req.body.complete);
@@ -52,6 +57,7 @@ export async function changerCompleteTache(req, res) {
   }
 }
 
+// Supprime ttâche par id
 export async function supprimerTache(req, res) {
   try {
     await modele.supprimerTache(req.params.id, req.usager.id);
@@ -62,6 +68,7 @@ export async function supprimerTache(req, res) {
   }
 }
 
+// Ajoute sous-tâche à tâche existante
 export async function ajouterSousTache(req, res) {
   try {
     const id = await modele.ajouterSousTache(req.params.id, req.body.titre);
@@ -72,6 +79,7 @@ export async function ajouterSousTache(req, res) {
   }
 }
 
+// Modifie par sous tâche ID et tâche ID
 export async function modifierSousTache(req, res) {
   try {
     await modele.modifierSousTache(req.params.id, req.params.idSousTache, req.body.titre);
@@ -82,6 +90,7 @@ export async function modifierSousTache(req, res) {
   }
 }
 
+// Change statut sous-tâche 
 export async function changerCompleteSousTache(req, res) {
   try {
     await modele.modifierCompleteSousTache(req.params.id, req.params.idSousTache, req.body.complete);
@@ -92,6 +101,7 @@ export async function changerCompleteSousTache(req, res) {
   }
 }
 
+// Supprime sous-tâceh par id
 export async function supprimerSousTache(req, res) {
   try {
     await modele.supprimerSousTache(req.params.id, req.params.idSousTache);

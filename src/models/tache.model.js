@@ -1,5 +1,6 @@
 import pool from '../config/db_pg.js';
 
+// Récupère toute les tâche d'un user
 export async function obtenirTaches(utilisateur_id, inclureCompletes = false) {
   const requete = inclureCompletes
     ? 'SELECT * FROM taches WHERE utilisateur_id = $1'
@@ -9,6 +10,7 @@ export async function obtenirTaches(utilisateur_id, inclureCompletes = false) {
   return resultat.rows;
 }
 
+// Récupère une tâche selon le id spécifié
 export async function obtenirTacheParId(tache_id, utilisateur_id) {
   const tacheRes = await pool.query(
     'SELECT * FROM taches WHERE id = $1 AND utilisateur_id = $2',
@@ -17,6 +19,7 @@ export async function obtenirTacheParId(tache_id, utilisateur_id) {
   const tache = tacheRes.rows[0];
   if (!tache) return null;
 
+    // Récupère sous-tâche assossié
   const sousTachesRes = await pool.query(
     'SELECT * FROM sous_taches WHERE tache_id = $1',
     [tache_id]
@@ -25,6 +28,7 @@ export async function obtenirTacheParId(tache_id, utilisateur_id) {
   return tache;
 }
 
+// Crée nouvelle tâche
 export async function creerTache(utilisateur_id, donnees) {
   const { titre, description, date_debut, date_echeance, complete } = donnees;
   const resultat = await pool.query(
@@ -35,6 +39,7 @@ export async function creerTache(utilisateur_id, donnees) {
   return resultat.rows[0].id;
 }
 
+// Modifie tâche selon id
 export async function modifierTache(tache_id, utilisateur_id, donnees) {
   const { titre, description, date_debut, date_echeance } = donnees;
   await pool.query(
@@ -45,6 +50,7 @@ export async function modifierTache(tache_id, utilisateur_id, donnees) {
   );
 }
 
+// Modifie statut tâche -> complete
 export async function modifierCompleteTache(tache_id, utilisateur_id, complete) {
   await pool.query(
     'UPDATE taches SET complete = $1 WHERE id = $2 AND utilisateur_id = $3',
@@ -52,11 +58,13 @@ export async function modifierCompleteTache(tache_id, utilisateur_id, complete) 
   );
 }
 
+// Supprime tâche et leur sous-tâches
 export async function supprimerTache(tache_id, utilisateur_id) {
   await pool.query('DELETE FROM sous_taches WHERE tache_id = $1', [tache_id]);
   await pool.query('DELETE FROM taches WHERE id = $1 AND utilisateur_id = $2', [tache_id, utilisateur_id]);
 }
 
+// Créer une sous-tâche pour une tâche avec tâche id
 export async function ajouterSousTache(tache_id, titre) {
   const resultat = await pool.query(
     `INSERT INTO sous_taches (tache_id, titre, complete)
@@ -66,6 +74,7 @@ export async function ajouterSousTache(tache_id, titre) {
   return resultat.rows[0].id;
 }
 
+// Modifie une sous-tâche selon id
 export async function modifierSousTache(tache_id, sous_tache_id, titre) {
   await pool.query(
     `UPDATE sous_taches
@@ -75,6 +84,7 @@ export async function modifierSousTache(tache_id, sous_tache_id, titre) {
   );
 }
 
+// Modifie statut complete
 export async function modifierCompleteSousTache(tache_id, sous_tache_id, complete) {
   await pool.query(
     `UPDATE sous_taches
@@ -84,6 +94,7 @@ export async function modifierCompleteSousTache(tache_id, sous_tache_id, complet
   );
 }
 
+// Supprime sous-tâche selon son id et id tâche
 export async function supprimerSousTache(tache_id, sous_tache_id) {
   await pool.query(
     'DELETE FROM sous_taches WHERE id = $1 AND tache_id = $2',

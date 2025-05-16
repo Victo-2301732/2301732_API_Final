@@ -4,6 +4,7 @@ import {
   regenererCleAPI
 } from '../models/utilisateur.model.js';
 
+// Inscriptuion nouveau user
 export async function inscrireUtilisateur(req, res) {
   try {
     const { nom, prenom, courriel, motDePasse } = req.body;
@@ -12,7 +13,9 @@ export async function inscrireUtilisateur(req, res) {
       return res.status(400).json({ erreur: 'Tous les champs sont requis.' });
     }
 
+    // Crée user et génère clé api
     const cleAPI = await creerUtilisateur({ nom, prenom, courriel, motDePasse });
+    // Retourne clé api au user
     res.status(201).json({ cle_api: cleAPI });
 
   } catch (erreur) {
@@ -21,6 +24,7 @@ export async function inscrireUtilisateur(req, res) {
   }
 }
 
+// Obtenir clé assosié ou regénérer
 export async function obtenirOuRegenererCle(req, res) {
   try {
     const { courriel, motDePasse, regenerer } = req.body;
@@ -34,11 +38,13 @@ export async function obtenirOuRegenererCle(req, res) {
       return res.status(401).json({ erreur: 'Identifiants invalides.' });
     }
 
+    // Si demande nouvelle clé
     if (regenerer) {
       const nouvelleCle = await regenererCleAPI(utilisateur.id);
       return res.json({ cle_api: nouvelleCle });
     }
 
+    // Retourne clé assosié
     res.json({ cle_api: utilisateur.cle_api });
 
   } catch (erreur) {
